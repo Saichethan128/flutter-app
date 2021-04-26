@@ -14,6 +14,10 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     final user = Provider.of<Userr>(context);
 
-    return user!=null ? MainPage() : Authenticate();
+   if(user==null){
+     return Authenticate();
+   }else{
+     return MainPage();
+   }
   }
 }

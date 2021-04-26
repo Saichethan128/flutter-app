@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/itemmodel.dart';
+import 'package:intl/intl.dart';
+
+import 'Add.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -6,13 +10,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final List<item> itemlist =[
+    item("Onion", 200.00, DateTime.now(), "Hyderabad"),
+    item("Potato", 175.00, DateTime.now(), "Warangal"),
+    item("Tomato", 125.00, DateTime.now(), "Amaravati"),
+  ];
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    final newItem = new item(null, null, null, null);
     return Scaffold(
       key: _key,
       drawer: Drawer(),
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: (){
+              //Navigate
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Additem(Item: newItem)),
+              );
+            },
+            color: Colors.black,
+          )
+        ],
         elevation: 0.0,
         backgroundColor: Colors.green[200],
         title: Center(
@@ -30,12 +53,11 @@ class _HomePageState extends State<HomePage> {
           },
           color: Colors.black,
         ),
-        actions: [
-          IconButton(icon: Icon(Icons.notifications_none),
-              onPressed: () {},
-              color: Colors.black)
-
-        ],
+        //actions: [
+        //IconButton(icon: Icon(Icons.notifications_none),
+        //  onPressed: () {},
+        //color: Colors.black)
+        //],
 
       ),
       body: Container(
@@ -201,10 +223,66 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                )
+                ),
+                Expanded(
+                  child: new ListView.builder(
+                      itemCount: itemlist.length,
+                      itemBuilder: (BuildContext context, int index) => builditemcard(context, index)
+                  ),
+                ),
               ]
           )
       ),
     );
   }
+  Widget builditemcard (BuildContext context, int index){
+    return new Container(
+      child: Card(
+        child:
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+              children: <Widget>[
+
+                Padding(
+                  padding: const EdgeInsets.only(top:8.0, bottom: 4.0),
+                  child: Row(
+                    children: [
+                      Text(itemlist[index].name, style: new TextStyle(fontSize: 30.0),),
+                      Spacer(),
+                      //Image.network('https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/tomatoes_helios4eos_gettyimages-edit.jpeg?itok=4KrW14a4.jpeg'),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top:4.0, bottom:80.0),
+                  child: Row(
+                    children: [
+                      Text(DateFormat('dd/MM/yyyy').format(itemlist[index].dateadded).toString()),
+                      Spacer(),
+                    ],
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(top:8.0, bottom:8.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text("₹${itemlist[index].price.toString()}"),
+                      Spacer(),
+                      Text(itemlist[index].location),
+                    ],
+                  ),
+                ),
+
+              ]
+          ),
+        ),
+
+      ),
+    );
+
+  }
 }
+
+

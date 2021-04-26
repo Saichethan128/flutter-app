@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/screens/authenticate/register.dart';
 import 'package:flutter_app/screens/authenticate/sign_in.dart';
 
 class Authenticate extends StatefulWidget {
@@ -7,9 +8,19 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
+  bool showSignIn = true;
+  void toggleView(){
+    //print(showSignIn.toString());
+    setState(() => showSignIn = !showSignIn);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SignIn();
+    if (showSignIn) {
+      return SignIn(toggleView:  toggleView);
+    } else {
+      return Register(toggleView:  toggleView);
+    }
   }
 }
 

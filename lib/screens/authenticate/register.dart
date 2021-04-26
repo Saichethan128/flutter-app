@@ -1,19 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/userr.dart';
 import 'package:flutter_app/screens/shared/constants.dart';
 import 'package:flutter_app/screens/shared/loading.dart';
 import 'package:flutter_app/services/auth.dart';
 
-class SignIn extends StatefulWidget {
+class Register extends StatefulWidget {
 
   final Function toggleView;
-  SignIn({ this.toggleView });
+  Register({ this.toggleView });
 
   @override
-  _SignInState createState() => _SignInState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _SignInState extends State<SignIn> {
+class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
@@ -31,11 +31,11 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         backgroundColor: Colors.green[400],
         elevation: 0.0,
-        title: Text('Sign in '),
+        title: Text('Sign up'),
         actions: <Widget>[
           TextButton.icon(
             icon: Icon(Icons.person),
-            label: Text('Register'),
+            label: Text('Sign In'),
             onPressed: () => widget.toggleView(),
           ),
         ],
@@ -56,8 +56,8 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                obscureText: true,
                 decoration: textInputDecoration.copyWith(hintText: 'password'),
+                obscureText: true,
                 validator: (val) => val.length < 6 ? 'Enter a password 6+ chars long' : null,
                 onChanged: (val) {
                   setState(() => password = val);
@@ -70,17 +70,17 @@ class _SignInState extends State<SignIn> {
                     onPrimary: Colors.white, // foreground
                   ),
                   child: Text(
-                    'Sign In',
+                    'Register',
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () async {
                     if(_formKey.currentState.validate()){
                       setState(() => loading = true);
-                      dynamic result = await _auth.signInWithEmailAndPassword(email, password);
+                      dynamic result = await _auth.registerWithEmailAndPassword(email, password);
                       if(result == null) {
                         setState(() {
                           loading = false;
-                          error = 'Could not sign in with those credentials';
+                          error = 'Please supply a valid email';
                         });
                       }
                     }
@@ -90,7 +90,7 @@ class _SignInState extends State<SignIn> {
               Text(
                 error,
                 style: TextStyle(color: Colors.red, fontSize: 14.0),
-              ),
+              )
             ],
           ),
         ),
@@ -98,4 +98,3 @@ class _SignInState extends State<SignIn> {
     );
   }
 }
-

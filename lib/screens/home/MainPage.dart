@@ -17,7 +17,6 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _children= [
     HomePage(),
     Favorite(),
-    Add(),
     MyProfile(),
   ];
   void onTapped(int index){
@@ -46,10 +45,6 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: "My ads",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: "Add",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle_rounded),
