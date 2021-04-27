@@ -11,14 +11,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<item> itemlist =[
-    item("Onion", 200.00, DateTime.now(), "Hyderabad"),
-    item("Potato", 175.00, DateTime.now(), "Warangal"),
-    item("Tomato", 125.00, DateTime.now(), "Amaravati"),
+    item("Onion", 200.00, DateTime.now(), "Hyderabad",null),
+    item("Potato", 175.00, DateTime.now(), "Warangal",null),
+    item("Tomato", 125.00, DateTime.now(), "Amaravati",null),
   ];
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final newItem = new item(null, null, null, null);
+    final newItem = new item(null, null, null, null,null);
     return Scaffold(
       key: _key,
       drawer: Drawer(),

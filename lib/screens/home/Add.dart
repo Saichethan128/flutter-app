@@ -59,14 +59,25 @@ class Additem extends StatelessWidget {
                   Item.dateadded = DateTime.now();
                   Item.location = _locationcontroller.text;
 
+
                   await db.collection("items").add(
                       {'name': Item.name,
                         'price': Item.price,
                         'Date of Harvest/Produce': Item.dateadded,
                         'Location': Item.location,
+                        'user': Item.userid,
                       }
-
                   );
+
+
+
+                  db.collection("users").doc(Item.userid).collection("items").add(
+                      {
+                        'name': Item.name,
+                        'price': Item.price,
+                        'Date of Harvest/Produce': Item.dateadded,
+                        'Location': Item.location,
+                      });
                   Navigator.pop(context);
 
                 },

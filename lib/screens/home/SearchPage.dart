@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/services/SearchService.dart';
 import 'package:get/get.dart';
 
-import 'DetaileScreen.dart';
+import 'DetailedScreen.dart';
 
 class SearchPage extends StatefulWidget {
   @override

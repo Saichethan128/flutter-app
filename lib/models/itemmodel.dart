@@ -3,7 +3,8 @@ class item{
   double price;
   DateTime dateadded;
   String location;
+  String userid;
 
-  item(this.name,this.price,this.dateadded,this.location);
+  item(this.name,this.price,this.dateadded,this.location,this.userid);
 
 }
