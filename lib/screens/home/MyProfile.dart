@@ -1,8 +1,14 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/userr.dart';
 import 'package:flutter_app/screens/shared/loading.dart';
 import 'package:flutter_app/services/auth.dart';
 import 'package:flutter_app/services/database.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'EditInfoPage.dart';
@@ -14,15 +20,50 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfileState extends State<MyProfile> {
   final AuthService _auth = AuthService();
+  String imageUrl;
+  uploadImage() async {
+    final _storage = FirebaseStorage.instance;
+    final _picker = ImagePicker();
+    PickedFile image;
 
+
+    //Check Permissions
+    await Permission.photos.request();
+
+    var permissionStatus = await Permission.photos.status;
+
+    if (permissionStatus.isGranted){
+      //Select Image
+      image = await _picker.getImage(source: ImageSource.gallery);
+      var file = File(image.path);
+
+      if (image != null){
+        //Upload to Firebase
+        var snapshot = await _storage.ref()
+            .child('folderName/imageName')
+            .putFile(file);
+
+        var downloadUrl = await snapshot.ref.getDownloadURL();
+
+        setState(() {
+          imageUrl = downloadUrl;
+        });
+      } else {
+        print('No Path Received');
+      }
+
+    } else {
+      print('Grant Permissions and try again');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<Userr>(context);
     return StreamBuilder<UserData>(
-      stream: DatabaseService(uid: user.uid).userData,
-      builder: (context, snapshot) {
+        stream: DatabaseService(uid: user.uid).userData,
+        builder: (context, snapshot) {
           UserData user = snapshot.data;
-          if(snapshot.hasData) {
+          if (snapshot.hasData) {
             return SafeArea(
                 child: Column(
                   children: [
@@ -31,16 +72,29 @@ class _MyProfileState extends State<MyProfile> {
 
                       child: Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.greenAccent[400],
-                              radius: 80,
-                              child: Text(
-                                'Image',
-                                style: TextStyle(fontSize: 25, color: Colors.white),
-                              ), //Text
-                            ),
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    20, 0, 20, 10),
+                                child: Center(
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.grey,
+                                    radius: 80,
+                                    child: imageUrl != null? ClipRRect(child :Image.network(imageUrl)):Text(
+                                      'Image',
+                                      style: TextStyle(
+                                          fontSize: 25, color: Colors.white),
+                                    ), //Text
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () => uploadImage(),
+                                icon: Icon(Icons.camera_enhance),
+
+                              )
+                            ],
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,10 +102,10 @@ class _MyProfileState extends State<MyProfile> {
                               Text(
                                 user.name,
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  letterSpacing: 1.0
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    letterSpacing: 1.0
                                 ),
                               ),
                               SizedBox(height: 8.0,),
@@ -87,21 +141,22 @@ class _MyProfileState extends State<MyProfile> {
                                 child: TextButton.icon(
                                   style: TextButton.styleFrom(
                                     primary: Colors.black, // background
-                                     // foreground
+                                    // foreground
                                   ),
                                   label: Text(
                                     'Edit Info',
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16
                                     ),
                                   ),
                                   icon: Icon(Icons.settings),
-                                  onPressed: (){
+                                  onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => EditInfo()),
+                                      MaterialPageRoute(
+                                          builder: (context) => EditInfo()),
                                     );
                                   },
                                 ),
@@ -129,10 +184,10 @@ class _MyProfileState extends State<MyProfile> {
                 )
             );
           }
-          else{
+          else {
             return Loading();
           }
-      }
+        }
     );
   }
 }

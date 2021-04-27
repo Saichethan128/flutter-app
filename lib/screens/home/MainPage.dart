@@ -5,6 +5,7 @@ import 'Add.dart';
 import 'Favorite.dart';
 import 'HomePage.dart';
 import 'MyProfile.dart';
+import 'SearchPage.dart';
 
 
 class MainPage extends StatefulWidget {
@@ -16,6 +17,7 @@ class _MainPageState extends State<MainPage> {
   int _currentindex=0;
   final List<Widget> _children= [
     HomePage(),
+    SearchPage(),
     Favorite(),
     MyProfile(),
   ];
@@ -41,6 +43,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: "Search",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),

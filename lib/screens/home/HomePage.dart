@@ -68,21 +68,6 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Column(
                   children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 15),
-                      color: Colors.green[50],
-                      width: double.infinity,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          hintText: "Search here",
-                          hintStyle: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
