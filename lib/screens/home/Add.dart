@@ -2,13 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/models/itemmodel.dart';
-
+import 'package:provider/provider.dart';
+import 'package:flutter_app/models/userr.dart';
 class Additem extends StatelessWidget {
   final db = FirebaseFirestore.instance;
   final item Item;
   Additem({Key key, @required this.Item}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<Userr>(context);
+
     TextEditingController _namecontroller = new TextEditingController();
     TextEditingController _locationcontroller = new TextEditingController();
     TextEditingController _pricecontroller = new TextEditingController();
@@ -58,7 +61,7 @@ class Additem extends StatelessWidget {
                   Item.price = double.parse(_pricecontroller.text);
                   Item.dateadded = DateTime.now();
                   Item.location = _locationcontroller.text;
-
+                  Item.userid= user.uid;
 
                   await db.collection("items").add(
                       {'name': Item.name,

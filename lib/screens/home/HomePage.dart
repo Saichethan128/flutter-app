@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/itemmodel.dart';
-import 'package:intl/intl.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Add.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,15 +9,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<item> itemlist =[
-    item("Onion", 200.00, DateTime.now(), "Hyderabad",null),
-    item("Potato", 175.00, DateTime.now(), "Warangal",null),
-    item("Tomato", 125.00, DateTime.now(), "Amaravati",null),
-  ];
+
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final newItem = new item(null, null, null, null,null);
+    final newItem = new item('null', 0.0, null, 'null','null');
     return Scaffold(
       key: _key,
       drawer: Drawer(),
@@ -210,9 +205,25 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Expanded(
-                  child: new ListView.builder(
-                      itemCount: itemlist.length,
-                      itemBuilder: (BuildContext context, int index) => builditemcard(context, index)
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance.collection('items').snapshots(),
+                      builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return SafeArea(
+                            child: Container(
+                              color: Colors.white,
+                            ),
+                          );
+                        } else {
+                          return new ListView(
+                              children: snapshot.data.docs
+                                  .map((DocumentSnapshot document){
+                                return builditemcard(context, document);
+                              },
+                              ).toList()
+                          );
+                        }
+                      }
                   ),
                 ),
               ]
@@ -220,7 +231,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-  Widget builditemcard (BuildContext context, int index){
+
+  Widget builditemcard (BuildContext context, DocumentSnapshot itemlist){
     return new Container(
       child: Card(
         child:
@@ -233,18 +245,9 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(top:8.0, bottom: 4.0),
                   child: Row(
                     children: [
-                      Text(itemlist[index].name, style: new TextStyle(fontSize: 30.0),),
+                      Text(itemlist.get('name'), style: new TextStyle(fontSize: 30.0),),
                       Spacer(),
                       //Image.network('https://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/image_nodes/tomatoes_helios4eos_gettyimages-edit.jpeg?itok=4KrW14a4.jpeg'),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top:4.0, bottom:80.0),
-                  child: Row(
-                    children: [
-                      Text(DateFormat('dd/MM/yyyy').format(itemlist[index].dateadded).toString()),
-                      Spacer(),
                     ],
                   ),
                 ),
@@ -253,9 +256,9 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(top:8.0, bottom:8.0),
                   child: Row(
                     children: <Widget>[
-                      Text("₹${itemlist[index].price.toString()}"),
+                      Text("₹${itemlist.get('price').toString()}"),
                       Spacer(),
-                      Text(itemlist[index].location),
+                      Text(itemlist.get('Location')),
                     ],
                   ),
                 ),
@@ -269,5 +272,3 @@ class _HomePageState extends State<HomePage> {
 
   }
 }
-
-
